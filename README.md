@@ -1,0 +1,1 @@
+Type checking utilities in pure Lua, inspired by the Sierra scheduler checker module.
