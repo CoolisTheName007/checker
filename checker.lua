@@ -1,15 +1,13 @@
----
-vars={}
-vars.checkers={}
+checkers={}
 function newchecker(name,f)
-	vars.checkers[name]=f
+	checkers[name]=f
 end
 function conforms(t,a)
 	return t == "?"
 	or (t:sub(1, 1) == "?" and (a==nil or conforms(t:sub(2, -1),a)))
 	or type(a) == t
 	or (pcall(getmetatable,a) and getmetatable(a) and getmetatable(a).__type == t)
-	or (vars.checkers[t] and vars.checkers[t](a))
+	or (checkers[t] and checkers[t](a))
 end
 
 function check_one(d,a)
