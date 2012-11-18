@@ -27,8 +27,8 @@ end
 function checkb(...)
 	local n=select('#',...)
 	for i=1,n/2 do
-		if not check_one(select(i,...),select(n-i+1,...)) then
-			error('args number '..i..':'..tostring(select(n-i+1,...),nil)..' of type '..tostring(type(select(n-i+1,...)))..' is not of type'..tostring(select(i,...),nil),3)
+		if not check_one(select(i,...),select(n/2+i,...)) then
+			error('arg number '..i..':'..tostring(select(n/2+1,...),nil)..' of type '..tostring(type(select(n/2+1,...)))..' is not of type '..tostring(select(i,...),nil),3)
 		end
 	end
 end
