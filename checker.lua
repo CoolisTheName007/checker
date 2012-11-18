@@ -1,38 +1,24 @@
----
-vars={}
-vars.checkers={}
-function newchecker(name,f)
-	vars.checkers[name]=f
-end
+checkers={}
+
 function conforms(t,a)
 	return t == "?"
 	or (t:sub(1, 1) == "?" and (a==nil or conforms(t:sub(2, -1),a)))
 	or type(a) == t
 	or (pcall(getmetatable,a) and getmetatable(a) and getmetatable(a).__type == t)
-	or (vars.checkers[t] and vars.checkers[t](a))
+	or (checkers[t] and checkers[t](a))
 end
 
-function check_one(d,a)
-	for t in d:gmatch('|?([^|]*)|?') do
-		if conforms(t,a) then return true end
-	end
-	return false
-end
-
-function checka(...)
-	for i=1,select('#',...),2 do
-		if not check_one(select(i,...)) then
-			error('arg number '..i..':'..tostring(select(i+1,...),nil)..'of type '..tostring(type(select(i+1,...)))..' is not of type '..tostring(select(i,...),nil),3)
+function check(s,...)
+	local i=0
+	local b
+	for d in s:gmatch(',?([^,]*),?') do
+		i=i+1
+		b=true
+		for t in d:gmatch('.?([^.]*).?') do
+			b=conforms(t,select(i,...))
+		end
+		if not b then
+			error('arg number '..i..':'..tostring(select(i,...),nil)..'of type '..tostring(type(select(i,...)))..' is not of type '..d,3)
 		end
 	end
 end
-function checkb(...)
-	local n=select('#',...)
-	for i=1,n/2 do
-		if not check_one(select(i,...),select(n-i+1,...)) then
-			error('args number '..i..':'..tostring(select(n-i+1,...),nil)..' of type '..tostring(type(select(n-i+1,...)))..' is not of type'..tostring(select(i,...),nil),3)
-		end
-	end
-end
-
-check=checkb
