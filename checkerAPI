@@ -1,15 +1,18 @@
 ---Type checking utilities in pure Lua for sandboxes without debug library, inspired by the Sierra scheduler checker module.
--- @usage os.loadAPI('.../checkerAPI')
---check=checkerAPI.check
---function foo(int_or_table,optional_string)
---	check('number|table,?string',int_or_table,optional_string)
---	stuff
---end
---
---foo(1) -> no problem
---foo({},'') -> no problem either
---(line l) foo(1,1) -(the caller is blamed, not the function)
--->>(filename):(l): arg number 2: 1 of type number is not of type ?string
+-- @usage
+-- os.loadAPI('checkerAPI')
+-- check=checkerAPI.check
+-- function foo(int_or_table,optional_string)
+	-- check('number|table,?string',int_or_table,optional_string)
+	-- print('All is well')
+-- end
+
+-- foo(1)
+-- >>All is well
+-- foo({},'')
+-- >>All is well
+-- foo(1,1)
+-- >>test.lua:12: arg number 2: 1 of type number is not of type ?string
 
 vars={}
 vars.checkers={}
