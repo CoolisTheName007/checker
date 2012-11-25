@@ -1,4 +1,8 @@
 ---Type checking utilities in pure Lua, for sandboxes without debug library, inspired by the Sierra scheduler checker module.
+--You can define custom types by
+--	functions by setting check.checkers['mytype']=function(object) ... end that return a boolean
+--	setting the __type field in the object metatable
+--Check out @conform for the order on which these are checked
 -- @module checker
 -- @usage local checker = require 'checker'
 --function foo(int,optional_string)
@@ -13,16 +17,16 @@
 local M = {_TYPE='module', _NAME='checker', _VERSION='0'}
 
 M.checkers={}
-checkers=M.checkers
+local checkers=M.checkers
 
 function M.conforms(t,a)
 	return t == "?"
 	or (t:sub(1, 1) == "?" and (a==nil or conforms(t:sub(2, -1),a)))
 	or type(a) == t
-	or (pcall(getmetatable,a) and getmetatable(a) and getmetatable(a).__type == t)
+	or (type(a)=='table' and getmetatable(a) and getmetatable(a).__type == t)
 	or (checkers[t] and checkers[t](a))
 end
-conforms=M.conforms
+local conforms=M.conforms
 
 function M.check(s,...)
 	local i=0
@@ -41,4 +45,4 @@ function M.check(s,...)
 		end
 	end
 end
-return M
+return M  
