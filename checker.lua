@@ -1,6 +1,6 @@
 ---Type checking utilities in pure Lua, for sandboxes without debug library, inspired by the Sierra scheduler checker module.
 --You can define custom types by
---	functions by setting check.checkers['mytype']=function(object) ... end that return a boolean
+--	functions by setting checker.checkers['mytype']=function(object) ... end that return a boolean
 --	setting the __type field in the object metatable
 --Check out @conform for the order on which these are checked
 -- @module checker
