@@ -19,25 +19,25 @@ local M = {_TYPE='module', _NAME='checker', _VERSION='0'}
 M.checkers={}
 local checkers=M.checkers
 
-function M.conforms(t,a)
+local conform
+function M.conform(t,a)
 	return t == "?"
-	or (t:sub(1, 1) == "?" and (a==nil or conforms(t:sub(2, -1),a)))
+	or (t:sub(1, 1) == "?" and (a==nil or M.conform(t:sub(2, -1),a)))
 	or type(a) == t
 	or (type(a)=='table' and getmetatable(a) and getmetatable(a).__type == t)
 	or (checkers[t] and checkers[t](a))
 end
-local conforms=M.conforms
+conform=M.conform
 
 function M.check(s,...)
 	local i=0
 	local b
-	for d in s:gmatch(',?([^,]*),?') do
-		--print(t)
+	for d in s:gmatch(',?([^,]+),?') do
 		i=i+1
 		b=false
-		for t in d:gmatch('|?([^|]*)|?') do
+		for t in d:gmatch('|?([^|]+)|?') do
 			--print(t)
-			if conforms(t,select(i,...)) then b=true break end
+			if conform(t,select(i,...)) then b=true break end
 		end
 		--print('passed')
 		if not b then
