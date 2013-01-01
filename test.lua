@@ -1,5 +1,4 @@
-os.loadAPI('checkerAPI')
-check=checkerAPI.check
+check=require'packages.checker'.check
 function foo(int_or_table,optional_string)
 	check('number|table,?string',int_or_table,optional_string)
 	print('All is well')

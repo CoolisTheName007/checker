@@ -14,22 +14,26 @@
 --foo({},'') -> no problem either
 --(line l) foo(1,1) -(the caller is blamed, not the function)
 --->>(filename):(l): arg number 2: 1 of type number is not of type ?string
-local M = {_TYPE='module', _NAME='checker', _VERSION='0'}
+local tostring,getmetatable,type,select=tostring,getmetatable,type,select
 
-M.checkers={}
-local checkers=M.checkers
+env=getfenv()
+setmetatable(env,nil)
+M={}
+
+local checkers={}
+M.checkers=checkers
 
 local conform
-function M.conform(t,a)
+local function conform(t,a)
 	return t == "?"
-	or (t:sub(1, 1) == "?" and (a==nil or M.conform(t:sub(2, -1),a)))
+	or (t:sub(1, 1) == "?" and (a==nil or conform(t:sub(2, -1),a)))
 	or type(a) == t
 	or (type(a)=='table' and getmetatable(a) and getmetatable(a).__type == t)
 	or (checkers[t] and checkers[t](a))
 end
-conform=M.conform
+M.conform=conform
 
-function M.check(s,...)
+local function check(s,...)
 	local i=0
 	local b
 	for d in s:gmatch(',?([^,]+),?') do
@@ -45,4 +49,5 @@ function M.check(s,...)
 		end
 	end
 end
-return M  
+M.check=check
+return M
